@@ -1,0 +1,7 @@
+{
+  "parent": "block/crop",
+  "textures": {
+    "crop": "primalage:blocks/stone",
+    "particle": "primalage:blocks/stone"
+  }
+}

@@ -9,12 +9,22 @@
       "locked_code": false,
       "ids": {},
       "registry_name": "primal_age"
+    },
+    {
+      "name": "Rock",
+      "type": "plant",
+      "sortid": 2,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "rock"
     }
   ],
   "variable_elements": [],
   "sound_elements": [],
   "language_map": {
     "en_us": {
+      "block.primalage.rock": "Rock",
       "itemGroup.tabprimal_age": "Primal Age"
     }
   },
