@@ -1,0 +1,11 @@
+{
+  "_fv": 15,
+  "_type": "tab",
+  "definition": {
+    "name": "Primal Age",
+    "icon": {
+      "value": "Items.DEBUG_STICK"
+    },
+    "showSearch": true
+  }
+}
