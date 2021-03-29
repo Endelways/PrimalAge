@@ -84,7 +84,7 @@ public class RockBlock extends PrimalageModElements.ModElement {
 				.add(() -> (ConfiguredFeature<?, ?>) feature.withConfiguration(
 						(new BlockClusterFeatureConfig.Builder(new SimpleBlockStateProvider(block.getDefaultState()), new SimpleBlockPlacer()))
 								.tries(64).build())
-						.withPlacement(Placement.COUNT_NOISE.configure(new NoiseDependant(-0.8, 0, 5))));
+						.withPlacement(Placement.COUNT_NOISE.configure(new NoiseDependant(-0.8, 0, 1))));
 	}
 	public static class BlockCustomFlower extends FlowerBlock {
 		public BlockCustomFlower() {
@@ -103,7 +103,7 @@ public class RockBlock extends PrimalageModElements.ModElement {
 
 		@Override
 		public PlantType getPlantType(IBlockReader world, BlockPos pos) {
-			return PlantType.PLAINS;
+			return PlantType.CAVE;
 		}
 	}
 }
