@@ -1,0 +1,30 @@
+{
+  "_fv": 15,
+  "_type": "tool",
+  "definition": {
+    "renderType": 0,
+    "texture": "knife",
+    "customModelName": "Normal",
+    "name": "Stone Knife",
+    "specialInfo": [],
+    "creativeTab": {
+      "value": "CUSTOM:PrimalAge"
+    },
+    "toolType": "Special",
+    "harvestLevel": 1,
+    "efficiency": 1.0,
+    "attackSpeed": 3.0,
+    "enchantability": 0,
+    "damageVsEntity": 3.0,
+    "usageCount": 20,
+    "blocksAffected": [],
+    "hasGlow": false,
+    "repairItems": [],
+    "immuneToFire": false,
+    "stayInGridWhenCrafting": true,
+    "damageOnCrafting": true,
+    "onBlockDestroyedWithTool": {
+      "name": "GetFiberFromGrass"
+    }
+  }
+}

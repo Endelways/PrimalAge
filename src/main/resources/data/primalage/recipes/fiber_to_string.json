@@ -1,0 +1,19 @@
+{
+  "group": "primalage",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "primalage:fiber"
+    },
+    {
+      "item": "primalage:fiber"
+    },
+    {
+      "item": "primalage:fiber"
+    }
+  ],
+  "result": {
+    "item": "primalage:string",
+    "count": 1
+  }
+}

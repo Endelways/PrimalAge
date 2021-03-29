@@ -12,12 +12,119 @@
     },
     {
       "name": "Rock",
-      "type": "plant",
+      "type": "block",
       "sortid": 2,
       "compiles": true,
       "locked_code": false,
       "ids": {},
       "registry_name": "rock"
+    },
+    {
+      "name": "RockStructure",
+      "type": "structure",
+      "sortid": 3,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "rock_structure"
+    },
+    {
+      "name": "FIBER",
+      "type": "item",
+      "sortid": 4,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "fiber"
+    },
+    {
+      "name": "GetFiberFromGrass",
+      "type": "procedure",
+      "sortid": 5,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "get_fiber_from_grass",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StoneKnife",
+      "type": "tool",
+      "sortid": 5,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "stone_knife"
+    },
+    {
+      "name": "UnbreakableWood",
+      "type": "procedure",
+      "sortid": 6,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "unbreakable_wood",
+      "metadata": {
+        "dependencies": []
+      }
+    },
+    {
+      "name": "String",
+      "type": "item",
+      "sortid": 7,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "string"
+    },
+    {
+      "name": "FiberToString",
+      "type": "recipe",
+      "sortid": 8,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "fiber_to_string"
+    },
+    {
+      "name": "Debug",
+      "type": "procedure",
+      "sortid": 10,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "debug",
+      "metadata": {
+        "dependencies": []
+      }
+    },
+    {
+      "name": "StringTag",
+      "type": "tag",
+      "sortid": 11,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "string_tag"
     }
   ],
   "variable_elements": [],
@@ -25,7 +132,10 @@
   "language_map": {
     "en_us": {
       "block.primalage.rock": "Rock",
-      "itemGroup.tabprimal_age": "Primal Age"
+      "item.primalage.stone_knife": "Stone Knife",
+      "itemGroup.tabprimal_age": "Primal Age",
+      "item.primalage.string": "Plant String",
+      "item.primalage.fiber": "Plant Fiber"
     }
   },
   "workspaceSettings": {

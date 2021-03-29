@@ -1,4 +1,7 @@
 {
   "block.primalage.rock": "Rock",
-  "itemGroup.tabprimal_age": "Primal Age"
+  "item.primalage.stone_knife": "Stone Knife",
+  "itemGroup.tabprimal_age": "Primal Age",
+  "item.primalage.string": "Plant String",
+  "item.primalage.fiber": "Plant Fiber"
 }
