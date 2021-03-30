@@ -106,18 +106,6 @@
       "registry_name": "fiber_to_string"
     },
     {
-      "name": "Debug",
-      "type": "procedure",
-      "sortid": 10,
-      "compiles": true,
-      "locked_code": false,
-      "ids": {},
-      "registry_name": "debug",
-      "metadata": {
-        "dependencies": []
-      }
-    },
-    {
       "name": "StringTag",
       "type": "tag",
       "sortid": 11,
@@ -125,17 +113,109 @@
       "locked_code": false,
       "ids": {},
       "registry_name": "string_tag"
+    },
+    {
+      "name": "StoneKnifeRecipe",
+      "type": "recipe",
+      "sortid": 12,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "stone_knife_recipe"
+    },
+    {
+      "name": "Hatchet",
+      "type": "tool",
+      "sortid": 13,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "hatchet"
+    },
+    {
+      "name": "HatchetRecipe",
+      "type": "recipe",
+      "sortid": 14,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "hatchet_recipe"
+    },
+    {
+      "name": "DisableVanilla",
+      "type": "recipe",
+      "sortid": 15,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "disable_vanilla"
+    },
+    {
+      "name": "ChoppingBlock",
+      "type": "block",
+      "sortid": 16,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "chopping_block"
+    },
+    {
+      "name": "ChoppingBlockGetItem",
+      "type": "procedure",
+      "sortid": 18,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "chopping_block_get_item",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChoppingBlockSetItem",
+      "type": "procedure",
+      "sortid": 19,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "chopping_block_set_item",
+      "metadata": {
+        "dependencies": []
+      }
     }
   ],
   "variable_elements": [],
   "sound_elements": [],
   "language_map": {
     "en_us": {
+      "block.primalage.chopping_block": "Chopping Block",
       "block.primalage.rock": "Rock",
       "item.primalage.stone_knife": "Stone Knife",
       "itemGroup.tabprimal_age": "Primal Age",
       "item.primalage.string": "Plant String",
-      "item.primalage.fiber": "Plant Fiber"
+      "item.primalage.fiber": "Plant Fiber",
+      "item.primalage.hatchet": "Hatchet"
     }
   },
   "workspaceSettings": {

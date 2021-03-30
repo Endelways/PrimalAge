@@ -1,12 +1,12 @@
 
 package org.endelways.primalage.itemgroup;
 
+import org.endelways.primalage.item.HatchetItem;
 import org.endelways.primalage.PrimalageModElements;
 
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.api.distmarker.Dist;
 
-import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemGroup;
 
@@ -22,7 +22,7 @@ public class PrimalAgeItemGroup extends PrimalageModElements.ModElement {
 			@OnlyIn(Dist.CLIENT)
 			@Override
 			public ItemStack createIcon() {
-				return new ItemStack(Items.DEBUG_STICK, (int) (1));
+				return new ItemStack(HatchetItem.block, (int) (1));
 			}
 
 			@OnlyIn(Dist.CLIENT)

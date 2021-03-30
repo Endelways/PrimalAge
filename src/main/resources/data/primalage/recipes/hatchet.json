@@ -1,0 +1,23 @@
+{
+  "group": "primalage",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1",
+    "23"
+  ],
+  "key": {
+    "1": {
+      "item": "primalage:rock"
+    },
+    "2": {
+      "item": "minecraft:stick"
+    },
+    "3": {
+      "item": "primalage:string"
+    }
+  },
+  "result": {
+    "item": "primalage:hatchet",
+    "count": 1
+  }
+}

@@ -4,7 +4,7 @@
   "definition": {
     "name": "Primal Age",
     "icon": {
-      "value": "Items.DEBUG_STICK"
+      "value": "CUSTOM:Hatchet"
     },
     "showSearch": true
   }

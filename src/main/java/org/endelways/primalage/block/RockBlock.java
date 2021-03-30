@@ -74,6 +74,11 @@ public class RockBlock extends PrimalageModElements.ModElement {
 		}
 
 		@Override
+		public Block.OffsetType getOffsetType() {
+			return Block.OffsetType.XZ;
+		}
+
+		@Override
 		public PushReaction getPushReaction(BlockState state) {
 			return PushReaction.DESTROY;
 		}

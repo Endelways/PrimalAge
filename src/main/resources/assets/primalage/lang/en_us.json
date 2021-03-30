@@ -1,7 +1,9 @@
 {
+  "block.primalage.chopping_block": "Chopping Block",
   "block.primalage.rock": "Rock",
   "item.primalage.stone_knife": "Stone Knife",
   "itemGroup.tabprimal_age": "Primal Age",
   "item.primalage.string": "Plant String",
-  "item.primalage.fiber": "Plant Fiber"
+  "item.primalage.fiber": "Plant Fiber",
+  "item.primalage.hatchet": "Hatchet"
 }

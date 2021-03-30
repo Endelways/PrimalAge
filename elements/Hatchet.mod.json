@@ -1,0 +1,27 @@
+{
+  "_fv": 15,
+  "_type": "tool",
+  "definition": {
+    "renderType": 0,
+    "texture": "hatchet",
+    "customModelName": "Normal",
+    "name": "Hatchet",
+    "specialInfo": [],
+    "creativeTab": {
+      "value": "CUSTOM:PrimalAge"
+    },
+    "toolType": "Axe",
+    "harvestLevel": 1,
+    "efficiency": 1.0,
+    "attackSpeed": 0.5,
+    "enchantability": 0,
+    "damageVsEntity": 6.0,
+    "usageCount": 20,
+    "blocksAffected": [],
+    "hasGlow": false,
+    "repairItems": [],
+    "immuneToFire": false,
+    "stayInGridWhenCrafting": false,
+    "damageOnCrafting": false
+  }
+}

@@ -2,40 +2,40 @@
   "_fv": 15,
   "_type": "block",
   "definition": {
-    "texture": "stone",
+    "texture": "oak_log_top",
     "textureTop": "",
     "textureLeft": "",
     "textureFront": "",
     "textureRight": "",
     "textureBack": "",
     "renderType": 2,
-    "customModelName": "rockmodel:default",
+    "customModelName": "choppingblock:default",
     "rotationMode": 0,
     "emissiveRendering": false,
     "displayFluidOverlay": false,
-    "itemTexture": "stone_rock",
+    "itemTexture": "",
     "particleTexture": "",
     "tintType": "No tint",
     "isItemTinted": false,
     "hasTransparency": true,
     "connectedSides": false,
     "transparencyType": "SOLID",
-    "mx": 0.375,
+    "mx": 0.125,
     "my": 0.0,
-    "mz": 0.375,
-    "Mx": 0.625,
-    "My": 0.0625,
-    "Mz": 0.625,
-    "name": "Rock",
+    "mz": 0.125,
+    "Mx": 0.875,
+    "My": 0.25,
+    "Mz": 0.875,
+    "name": "Chopping Block",
     "specialInfo": [],
-    "hardness": 0.0,
+    "hardness": 2.0,
     "resistance": 10.0,
     "hasGravity": false,
     "isWaterloggable": false,
     "creativeTab": {
       "value": "CUSTOM:PrimalAge"
     },
-    "destroyTool": "Not specified",
+    "destroyTool": "axe",
     "customDrop": {
       "value": ""
     },
@@ -51,20 +51,20 @@
     "tickRate": 10,
     "tickRandomly": false,
     "isReplaceable": false,
-    "colorOnMap": "AIR",
+    "colorOnMap": "DEFAULT",
     "creativePickItem": {
       "value": ""
     },
-    "offsetType": "XZ",
+    "offsetType": "NONE",
     "aiPathNodeType": "DEFAULT",
     "flammability": 0,
     "fireSpreadSpeed": 0,
     "isLadder": false,
     "slipperiness": 0.6,
-    "reactionToPushing": "DESTROY",
-    "isNotColidable": true,
+    "reactionToPushing": "NORMAL",
+    "isNotColidable": false,
     "soundOnStep": {
-      "value": "STONE"
+      "value": "WOOD"
     },
     "luminance": 0,
     "unbreakable": false,
@@ -76,15 +76,19 @@
     "particleSpawningShape": "Spread",
     "particleSpawningRadious": 0.5,
     "particleAmount": 4,
-    "hasInventory": false,
+    "hasInventory": true,
     "guiBoundTo": "<NONE>",
     "openGUIOnRightClick": false,
-    "inventorySize": 9,
-    "inventoryStackSize": 64,
+    "inventorySize": 1,
+    "inventoryStackSize": 1,
     "inventoryDropWhenDestroyed": true,
     "inventoryComparatorPower": true,
-    "inventoryOutSlotIDs": [],
-    "inventoryInSlotIDs": [],
+    "inventoryOutSlotIDs": [
+      0
+    ],
+    "inventoryInSlotIDs": [
+      0
+    ],
     "hasEnergyStorage": false,
     "energyInitial": 0,
     "energyCapacity": 400000,
@@ -93,12 +97,15 @@
     "isFluidTank": false,
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
+    "onRightClicked": {
+      "name": "ChoppingBlockSetItem"
+    },
     "spawnWorldTypes": [],
     "restrictionBiomes": [],
     "blocksToReplace": [],
-    "frequencyPerChunks": 1,
-    "frequencyOnChunk": 1,
-    "minGenerateHeight": 63,
-    "maxGenerateHeight": 256
+    "frequencyPerChunks": 10,
+    "frequencyOnChunk": 16,
+    "minGenerateHeight": 0,
+    "maxGenerateHeight": 64
   }
 }
