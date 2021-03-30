@@ -129,6 +129,11 @@ public class ChoppingBlockBlock extends PrimalageModElements.ModElement {
 			Direction direction = hit.getFace();
 			{
 				Map<String, Object> $_dependencies = new HashMap<>();
+				$_dependencies.put("entity", entity);
+				$_dependencies.put("x", x);
+				$_dependencies.put("y", y);
+				$_dependencies.put("z", z);
+				$_dependencies.put("world", world);
 				ChoppingBlockSetItemProcedure.executeProcedure($_dependencies);
 			}
 			return ActionResultType.SUCCESS;

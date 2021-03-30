@@ -7,6 +7,9 @@ import org.endelways.primalage.PrimalageMod;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 import net.minecraft.world.IWorld;
 import net.minecraft.util.math.BlockPos;
@@ -16,13 +19,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.Entity;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Map;
+import java.util.HashMap;
 
 @PrimalageModElements.ModElement.Tag
 public class ChoppingBlockGetItemProcedure extends PrimalageModElements.ModElement {
 	public ChoppingBlockGetItemProcedure(PrimalageModElements instance) {
 		super(instance, 18);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	public static void executeProcedure(Map<String, Object> dependencies) {
@@ -57,18 +61,18 @@ public class ChoppingBlockGetItemProcedure extends PrimalageModElements.ModEleme
 		double z = dependencies.get("z") instanceof Integer ? (int) dependencies.get("z") : (double) dependencies.get("z");
 		IWorld world = (IWorld) dependencies.get("world");
 		if (((world.getBlockState(new BlockPos((int) x, (int) y, (int) z))).getBlock() == ChoppingBlockBlock.block.getDefaultState().getBlock())) {
-			if (((new Object() {
-				public int getAmount(IWorld world, BlockPos pos, int sltid) {
-					AtomicInteger _retval = new AtomicInteger(0);
+			if ((!((new Object() {
+				public ItemStack getItemStack(BlockPos pos, int sltid) {
+					AtomicReference<ItemStack> _retval = new AtomicReference<>(ItemStack.EMPTY);
 					TileEntity _ent = world.getTileEntity(pos);
 					if (_ent != null) {
 						_ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
-							_retval.set(capability.getStackInSlot(sltid).getCount());
+							_retval.set(capability.getStackInSlot(sltid).copy());
 						});
 					}
 					return _retval.get();
 				}
-			}.getAmount(world, new BlockPos((int) x, (int) y, (int) z), (int) (0))) == 1)) {
+			}.getItemStack(new BlockPos((int) x, (int) y, (int) z), (int) (0))).getItem() == (ItemStack.EMPTY).getItem()))) {
 				if (entity instanceof PlayerEntity) {
 					ItemStack _setstack = (new Object() {
 						public ItemStack getItemStack(BlockPos pos, int sltid) {
@@ -101,5 +105,25 @@ public class ChoppingBlockGetItemProcedure extends PrimalageModElements.ModEleme
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+		PlayerEntity entity = event.getPlayer();
+		if (event.getHand() != entity.getActiveHand()) {
+			return;
+		}
+		double i = event.getPos().getX();
+		double j = event.getPos().getY();
+		double k = event.getPos().getZ();
+		IWorld world = event.getWorld();
+		Map<String, Object> dependencies = new HashMap<>();
+		dependencies.put("x", i);
+		dependencies.put("y", j);
+		dependencies.put("z", k);
+		dependencies.put("world", world);
+		dependencies.put("entity", entity);
+		dependencies.put("event", event);
+		this.executeProcedure(dependencies);
 	}
 }
