@@ -1,6 +1,18 @@
 
 package org.endelways.primalage.block;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.*;
+import net.minecraftforge.fml.RegistryObject;
+import org.endelways.primalage.api.ChoppingTileEntityType;
 import org.endelways.primalage.procedures.ChoppingBlockSetItemProcedure;
 import org.endelways.primalage.itemgroup.PrimalAgeItemGroup;
 import org.endelways.primalage.PrimalageModElements;
@@ -29,10 +41,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.LockableLootTileEntity;
@@ -60,19 +68,16 @@ import net.minecraft.block.Block;
 
 import javax.annotation.Nullable;
 
+import java.util.*;
 import java.util.stream.IntStream;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Collections;
 
 @PrimalageModElements.ModElement.Tag
-public class ChoppingBlockBlock extends PrimalageModElements.ModElement {
+public class ChoppingBlock extends PrimalageModElements.ModElement {
 	@ObjectHolder("primalage:chopping_block")
 	public static final Block block = null;
 	@ObjectHolder("primalage:chopping_block")
-	public static final TileEntityType<CustomTileEntity> tileEntityType = null;
-	public ChoppingBlockBlock(PrimalageModElements instance) {
+	public static final TileEntityType<ChoppingTileEntity> tileEntityType = null;
+	public ChoppingBlock(PrimalageModElements instance) {
 		super(instance, 16);
 		FMLJavaModLoadingContext.get().getModEventBus().register(new TileEntityRegisterHandler());
 	}
@@ -85,7 +90,7 @@ public class ChoppingBlockBlock extends PrimalageModElements.ModElement {
 	private static class TileEntityRegisterHandler {
 		@SubscribeEvent
 		public void registerTileEntity(RegistryEvent.Register<TileEntityType<?>> event) {
-			event.getRegistry().register(TileEntityType.Builder.create(CustomTileEntity::new, block).build(null).setRegistryName("chopping_block"));
+			event.getRegistry().register(TileEntityType.Builder.create(ChoppingTileEntity::new, block).build(null).setRegistryName("chopping_block"));
 		}
 	}
 	@Override
@@ -152,7 +157,7 @@ public class ChoppingBlockBlock extends PrimalageModElements.ModElement {
 
 		@Override
 		public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-			return new CustomTileEntity();
+			return new ChoppingTileEntity();
 		}
 
 		@Override
@@ -166,8 +171,8 @@ public class ChoppingBlockBlock extends PrimalageModElements.ModElement {
 		public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 			if (state.getBlock() != newState.getBlock()) {
 				TileEntity tileentity = world.getTileEntity(pos);
-				if (tileentity instanceof CustomTileEntity) {
-					InventoryHelper.dropInventoryItems(world, pos, (CustomTileEntity) tileentity);
+				if (tileentity instanceof ChoppingTileEntity) {
+					InventoryHelper.dropInventoryItems(world, pos, (ChoppingTileEntity) tileentity);
 					world.updateComparatorOutputLevel(pos, this);
 				}
 				super.onReplaced(state, world, pos, newState, isMoving);
@@ -182,16 +187,18 @@ public class ChoppingBlockBlock extends PrimalageModElements.ModElement {
 		@Override
 		public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
 			TileEntity tileentity = world.getTileEntity(pos);
-			if (tileentity instanceof CustomTileEntity)
-				return Container.calcRedstoneFromInventory((CustomTileEntity) tileentity);
+			if (tileentity instanceof ChoppingTileEntity)
+				return Container.calcRedstoneFromInventory((ChoppingTileEntity) tileentity);
 			else
 				return 0;
 		}
 	}
 
-	public static class CustomTileEntity extends LockableLootTileEntity implements ISidedInventory {
+	public static class ChoppingTileEntity extends LockableLootTileEntity implements ISidedInventory {
+//		public static final RegistryObject<TileEntityType<ChoppingTileEntity>> TYPE = ChoppingTileEntityType.CHOPPING_BLOCK_TILE_ENTITY_TYPE;
+
 		private NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
-		protected CustomTileEntity() {
+		protected ChoppingTileEntity() {
 			super(tileEntityType);
 		}
 
@@ -262,7 +269,7 @@ public class ChoppingBlockBlock extends PrimalageModElements.ModElement {
 		}
 
 		@Override
-		protected NonNullList<ItemStack> getItems() {
+		public NonNullList<ItemStack> getItems() {
 			return this.stacks;
 		}
 
@@ -307,6 +314,39 @@ public class ChoppingBlockBlock extends PrimalageModElements.ModElement {
 			super.remove();
 			for (LazyOptional<? extends IItemHandler> handler : handlers)
 				handler.invalidate();
+		}
+	}
+
+	public class ChoppingBlockRenderer extends TileEntityRenderer<ChoppingTileEntity>
+	{
+		private final Minecraft mc = Minecraft.getInstance();
+
+		public ChoppingBlockRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+		{
+			super(rendererDispatcherIn);
+		}
+
+		@Override
+		public void render(ChoppingTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn)
+		{
+			BlockState state = te.getWorld().getBlockState(te.getPos());
+			if (!(state.getBlock() instanceof CustomBlock))
+			{
+				matrixStack.push();
+				ItemRenderer itemRenderer = this.mc.getItemRenderer();
+				ItemStack stack = te.getItems().get(0);
+				if (stack.getCount() > 0)
+				{
+					matrixStack.push();
+					matrixStack.translate(0.5, 0.5, 0.5);
+					matrixStack.translate(0, -4.5 / 16.0f, 0);
+					matrixStack.scale(2, 2, 2);
+					IBakedModel ibakedmodel = itemRenderer.getItemModelWithOverrides(stack, te.getWorld(), (LivingEntity) null);
+					itemRenderer.renderItem(stack, ItemCameraTransforms.TransformType.GROUND, true, matrixStack, buffer, combinedLightIn, combinedOverlayIn, ibakedmodel);
+					matrixStack.pop();
+				}
+				matrixStack.pop();
+			}
 		}
 	}
 }

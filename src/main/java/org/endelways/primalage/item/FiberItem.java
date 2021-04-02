@@ -12,10 +12,10 @@ import net.minecraft.item.Item;
 import net.minecraft.block.BlockState;
 
 @PrimalageModElements.ModElement.Tag
-public class FIBERItem extends PrimalageModElements.ModElement {
+public class FiberItem extends PrimalageModElements.ModElement {
 	@ObjectHolder("primalage:fiber")
 	public static final Item block = null;
-	public FIBERItem(PrimalageModElements instance) {
+	public FiberItem(PrimalageModElements instance) {
 		super(instance, 4);
 	}
 

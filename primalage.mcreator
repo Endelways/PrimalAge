@@ -224,6 +224,15 @@
           }
         ]
       }
+    },
+    {
+      "name": "Branch",
+      "type": "block",
+      "sortid": 20,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "branch"
     }
   ],
   "variable_elements": [],
@@ -236,7 +245,8 @@
       "itemGroup.tabprimal_age": "Primal Age",
       "item.primalage.string": "Plant String",
       "item.primalage.fiber": "Plant Fiber",
-      "item.primalage.hatchet": "Hatchet"
+      "item.primalage.hatchet": "Hatchet",
+      "block.primalage.branch": "Branch"
     }
   },
   "workspaceSettings": {
@@ -255,7 +265,7 @@
     "currentGenerator": "forge-1.16.4",
     "credits": "Created using mod maker MCreator - https://mcreator.net/about",
     "modElementsPackage": "org.endelways.primalage",
-    "lockBaseModFiles": false
+    "lockBaseModFiles": true
   },
   "mcreatorVersion": 202100103117
 }

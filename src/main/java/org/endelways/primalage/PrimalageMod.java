@@ -17,6 +17,24 @@
  */
 package org.endelways.primalage;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.tileentity.HopperTileEntity;
+import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.ToolType;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -36,11 +54,16 @@ import net.minecraft.item.Item;
 import net.minecraft.entity.EntityType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.block.Block;
+import org.endelways.primalage.api.ChoppingRecipe;
+import org.endelways.primalage.api.ChoppingRecipeType;
+import org.endelways.primalage.block.ChoppingBlock;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 @Mod("primalage")
 public class PrimalageMod {
+	public static final IRecipeType<ChoppingRecipe> CHOPPING_RECIPE = new ChoppingRecipeType();
 	public static final Logger LOGGER = LogManager.getLogger(PrimalageMod.class);
 	private static final String PROTOCOL_VERSION = "1";
 	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(new ResourceLocation("primalage", "primalage"),
@@ -52,8 +75,77 @@ public class PrimalageMod {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientLoad);
 		MinecraftForge.EVENT_BUS.register(new PrimalageModFMLBusEvents(this));
+		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
+		MinecraftForge.EVENT_BUS.addListener(this::onPlayerClickBlock);
 	}
+	private void registerRecipeSerializers (RegistryEvent.Register<IRecipeSerializer<?>> event) {
 
+		// Vanilla has a registry for recipe types, but it does not actively use this registry.
+		// While this makes registering your recipe type an optional step, I recommend
+		// registering it anyway to allow other mods to discover your custom recipe types.
+		Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(CHOPPING_RECIPE.toString()), CHOPPING_RECIPE);
+
+		// Register the recipe serializer. This handles from json, from packet, and to packet.
+		event.getRegistry().register(ChoppingRecipe.SERIALIZER);
+	}
+	private void onPlayerClickBlock (PlayerInteractEvent.LeftClickBlock event) {
+
+		// Check that the world is server side, and the player actually exists.
+		if (!event.getWorld().isRemote && event.getPlayer() != null) {
+
+			// Get the currently held item of the player, for the hand that was used in the
+			// event.
+			final ItemStack heldItem = event.getPlayer().getHeldItem(event.getHand());
+			final BlockState block = event.getWorld().getBlockState(event.getPos());
+			final ChoppingBlock.ChoppingTileEntity Tblock = (ChoppingBlock.ChoppingTileEntity)((LockableLootTileEntity)event.getWorld().getTileEntity(event.getPos()));
+			// Iterates all the recipes for the custom recipe type. If you have lots of recipes
+			// you may want to consider adding some form of recipe caching. In this case we
+			// could store the last successful recipe in a global field to lower the lookup
+			// time for repeat crafting. You could also use RecipesUpdatedEvent to build a
+			// cache of your recipes. Make sure to build the cache on LOWEST priority so mods
+			// like CraftTweaker can work with your recipes.
+			System.out.println(block.getBlock().getRegistryName().toString());
+			System.out.println(heldItem.getToolTypes());
+			System.out.println(heldItem.getToolTypes().contains(ToolType.AXE));
+			System.out.println(block.getBlock().getRegistryName().toString().equals("primalage:chopping_block"));
+			if(heldItem.getToolTypes().contains(ToolType.AXE) && block.getBlock().getRegistryName().toString().equals("primalage:chopping_block")) {
+
+				final ItemStack itemToCraft = Tblock.getItems().get(0);
+				System.out.println(itemToCraft.toString());
+				for (final IRecipe<?> recipe : this.getRecipes(CHOPPING_RECIPE, event.getWorld().getRecipeManager()).values()) {
+					System.out.println(recipe);
+					// If you need access to custom recipe methods you will need to check and cast
+					// to your recipe type. This step could be skipped if you did it during a cache
+					// process.
+					if (recipe instanceof ChoppingRecipe) {
+						System.out.println(recipe + " instanceof ChoppingRecipe");
+						System.out.println(((ChoppingRecipe) recipe).getBlock());
+						final ChoppingRecipe choppingRecipe = (ChoppingRecipe) recipe;
+
+						// isValid is a custom recipe which checks if the held item and block match
+						// a known recipe. If this were cached to a multimap you could use Block as
+						// a key and only check the held item.
+						if (choppingRecipe.isValid(itemToCraft.getItem().getRegistryName()))
+						{
+
+							System.out.println(itemToCraft.getItem().getRegistryName() + "is Valid");
+							// When the recipe is valid, shrink the held item by one.
+							Tblock.setInventorySlotContents(0, ItemStack.EMPTY);
+
+							// This forge method tries to give a player an item. If they have no
+							// room it drops on the ground. We're giving them a copy of the output
+							// item.
+							ItemEntity entityToSpawn = new ItemEntity((World) event.getWorld(), event.getPos().getX(),event.getPos().getY() + 0.5,event.getPos().getZ(), choppingRecipe.getRecipeOutput());
+							entityToSpawn.setPickupDelay((int) 0.5);
+							event.getWorld().addEntity(entityToSpawn);
+							event.setCanceled(true);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 	private void init(FMLCommonSetupEvent event) {
 		elements.getElements().forEach(element -> element.init(event));
 	}
@@ -76,6 +168,11 @@ public class PrimalageMod {
 	public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
 		event.getRegistry().registerAll(elements.getEntities().stream().map(Supplier::get).toArray(EntityType[]::new));
 	}
+//	@SubscribeEvent
+//	public void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event){
+//
+//		event.getRegistry().register("chopper", TileEntityType.Builder.create());
+//	}
 
 	@SubscribeEvent
 	public void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
@@ -97,4 +194,14 @@ public class PrimalageMod {
 			this.parent.elements.getElements().forEach(element -> element.serverLoad(event));
 		}
 	}
+	private Map<ResourceLocation, IRecipe<?>> getRecipes (IRecipeType<?> recipeType, RecipeManager manager) {
+
+		final Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipesMap = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, manager, "field_199522_d");
+		return recipesMap.get(recipeType);
+	}
+//	@SubscribeEvent
+//	public static void registerModels(ModelRegistryEvent event)
+//	{
+//		ClientRegistry.bindTileEntityRenderer(ChoppingBlock.ChoppingTileEntity.TYPE.get(), ChoppingBlock.ChoppingBlockRenderer::new);
+//	}
 }

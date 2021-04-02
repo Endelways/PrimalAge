@@ -1,0 +1,8 @@
+{
+  "parent": "primalage:custom/branch",
+  "textures": {
+    "all": "primalage:blocks/stick",
+    "particle": "primalage:blocks/stick",
+    "missing": "primalage:blocks/stick"
+  }
+}

@@ -1,6 +1,6 @@
 package org.endelways.primalage.procedures;
 
-import org.endelways.primalage.block.ChoppingBlockBlock;
+import org.endelways.primalage.block.ChoppingBlock;
 import org.endelways.primalage.PrimalageModElements;
 import org.endelways.primalage.PrimalageMod;
 
@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Entity;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -60,7 +61,9 @@ public class ChoppingBlockGetItemProcedure extends PrimalageModElements.ModEleme
 		double y = dependencies.get("y") instanceof Integer ? (int) dependencies.get("y") : (double) dependencies.get("y");
 		double z = dependencies.get("z") instanceof Integer ? (int) dependencies.get("z") : (double) dependencies.get("z");
 		IWorld world = (IWorld) dependencies.get("world");
-		if (((world.getBlockState(new BlockPos((int) x, (int) y, (int) z))).getBlock() == ChoppingBlockBlock.block.getDefaultState().getBlock())) {
+		if ((((world.getBlockState(new BlockPos((int) x, (int) y, (int) z))).getBlock() == ChoppingBlock.block.getDefaultState().getBlock())
+				&& ((((entity instanceof LivingEntity) ? ((LivingEntity) entity).getHeldItemMainhand() : ItemStack.EMPTY).copy())
+						.getItem() == (ItemStack.EMPTY).getItem()))) {
 			if ((!((new Object() {
 				public ItemStack getItemStack(BlockPos pos, int sltid) {
 					AtomicReference<ItemStack> _retval = new AtomicReference<>(ItemStack.EMPTY);

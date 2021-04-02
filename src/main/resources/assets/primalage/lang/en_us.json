@@ -5,5 +5,6 @@
   "itemGroup.tabprimal_age": "Primal Age",
   "item.primalage.string": "Plant String",
   "item.primalage.fiber": "Plant Fiber",
-  "item.primalage.hatchet": "Hatchet"
+  "item.primalage.hatchet": "Hatchet",
+  "block.primalage.branch": "Branch"
 }

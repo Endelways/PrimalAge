@@ -1,6 +1,6 @@
 package org.endelways.primalage.procedures;
 
-import org.endelways.primalage.item.FIBERItem;
+import org.endelways.primalage.item.FiberItem;
 import org.endelways.primalage.PrimalageModElements;
 import org.endelways.primalage.PrimalageMod;
 
@@ -46,7 +46,7 @@ public class GetFiberFromGrassProcedure extends PrimalageModElements.ModElement 
 		randomDrop = (double) Math.random();
 		if (((randomDrop) >= 0.5)) {
 			if (world instanceof World && !world.isRemote()) {
-				ItemEntity entityToSpawn = new ItemEntity((World) world, (x + 0.5), (y + 0.5), (z + 0.5), new ItemStack(FIBERItem.block, (int) (1)));
+				ItemEntity entityToSpawn = new ItemEntity((World) world, (x + 0.5), (y + 0.5), (z + 0.5), new ItemStack(FiberItem.block, (int) (1)));
 				entityToSpawn.setPickupDelay((int) 0.5);
 				world.addEntity(entityToSpawn);
 			}

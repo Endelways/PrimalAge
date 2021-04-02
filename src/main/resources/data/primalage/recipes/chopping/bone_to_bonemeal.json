@@ -1,0 +1,8 @@
+{
+  "type": "primalage:chopping",
+  "input": "minecraft:stripped_oak_log",
+  "output": {
+    "item": "minecraft:oak_planks",
+	"count": 1
+  }
+}
