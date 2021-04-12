@@ -233,19 +233,59 @@
       "locked_code": false,
       "ids": {},
       "registry_name": "branch"
+    },
+    {
+      "name": "Skin",
+      "type": "item",
+      "sortid": 21,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "skin"
+    },
+    {
+      "name": "Barrel",
+      "type": "block",
+      "sortid": 22,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "barrel"
+    },
+    {
+      "name": "ClayBucket",
+      "type": "item",
+      "sortid": 23,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "clay_bucket"
+    },
+    {
+      "name": "BurntBucket",
+      "type": "item",
+      "sortid": 24,
+      "compiles": true,
+      "locked_code": false,
+      "ids": {},
+      "registry_name": "burnt_bucket"
     }
   ],
   "variable_elements": [],
   "sound_elements": [],
   "language_map": {
     "en_us": {
-      "block.primalage.chopping_block": "Chopping Block",
       "block.primalage.rock": "Rock",
-      "item.primalage.stone_knife": "Stone Knife",
-      "itemGroup.tabprimal_age": "Primal Age",
       "item.primalage.string": "Plant String",
       "item.primalage.fiber": "Plant Fiber",
       "item.primalage.hatchet": "Hatchet",
+      "block.primalage.chopping_block": "Chopping Block",
+      "item.primalage.clay_bucket": "Clay Bucket",
+      "item.primalage.stone_knife": "Stone Knife",
+      "block.primalage.barrel": "Barrel",
+      "itemGroup.tabprimal_age": "Primal Age",
+      "item.primalage.burnt_bucket": "Burnt Bucket",
+      "item.primalage.skin": "Skin",
       "block.primalage.branch": "Branch"
     }
   },

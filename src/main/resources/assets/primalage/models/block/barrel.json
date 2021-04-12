@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "primalage:blocks/oak_log",
+    "up": "primalage:blocks/oak_log",
+    "north": "primalage:blocks/oak_log",
+    "east": "primalage:blocks/oak_log",
+    "south": "primalage:blocks/oak_log",
+    "west": "primalage:blocks/oak_log",
+    "particle": "primalage:blocks/oak_log"
+  }
+}

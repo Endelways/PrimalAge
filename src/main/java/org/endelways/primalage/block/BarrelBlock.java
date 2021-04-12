@@ -1,19 +1,7 @@
 
 package org.endelways.primalage.block;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.*;
-import net.minecraftforge.fml.RegistryObject;
-//import org.endelways.primalage.api.ChoppingTileEntityType;
-import org.endelways.primalage.procedures.ChoppingBlockSetItemProcedure;
+import net.minecraft.block.CauldronBlock;
 import org.endelways.primalage.itemgroup.PrimalAgeItemGroup;
 import org.endelways.primalage.PrimalageModElements;
 
@@ -22,25 +10,20 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.api.distmarker.Dist;
 
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.Direction;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.LockableLootTileEntity;
@@ -55,12 +38,9 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
@@ -68,17 +48,18 @@ import net.minecraft.block.Block;
 
 import javax.annotation.Nullable;
 
-import java.util.*;
 import java.util.stream.IntStream;
+import java.util.List;
+import java.util.Collections;
 
 @PrimalageModElements.ModElement.Tag
-public class ChoppingBlock extends PrimalageModElements.ModElement {
-	@ObjectHolder("primalage:chopping_block")
+public class BarrelBlock extends PrimalageModElements.ModElement {
+	@ObjectHolder("primalage:barrel")
 	public static final Block block = null;
-	@ObjectHolder("primalage:chopping_block")
-	public static final TileEntityType<ChoppingTileEntity> tileEntityType = null;
-	public ChoppingBlock(PrimalageModElements instance) {
-		super(instance, 16);
+	@ObjectHolder("primalage:barrel")
+	public static final TileEntityType<CustomTileEntity> tileEntityType = null;
+	public BarrelBlock(PrimalageModElements instance) {
+		super(instance, 22);
 		FMLJavaModLoadingContext.get().getModEventBus().register(new TileEntityRegisterHandler());
 	}
 
@@ -90,30 +71,14 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 	private static class TileEntityRegisterHandler {
 		@SubscribeEvent
 		public void registerTileEntity(RegistryEvent.Register<TileEntityType<?>> event) {
-			event.getRegistry().register(TileEntityType.Builder.create(ChoppingTileEntity::new, block).build(null).setRegistryName("chopping_block"));
+			event.getRegistry().register(TileEntityType.Builder.create(CustomTileEntity::new, block).build(null).setRegistryName("barrel"));
 		}
 	}
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void clientLoad(FMLClientSetupEvent event) {
-		RenderTypeLookup.setRenderLayer(block, RenderType.getCutout());
-	}
-	public static class CustomBlock extends Block {
+
+	public static class CustomBlock extends CauldronBlock {
 		public CustomBlock() {
-			super(Block.Properties.create(Material.ROCK).sound(SoundType.WOOD).hardnessAndResistance(2f, 10f).setLightLevel(s -> 0).harvestLevel(1)
-					.harvestTool(ToolType.AXE).notSolid().setOpaque((bs, br, bp) -> false));
-			setRegistryName("chopping_block");
-		}
-
-		@Override
-		public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-			return true;
-		}
-
-		@Override
-		public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-			Vector3d offset = state.getOffset(world, pos);
-			return VoxelShapes.create(0.125D, 0D, 0.125D, 0.875D, 0.25D, 0.875D).withOffset(offset.x, offset.y, offset.z);
+			super(Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(1f, 10f).setLightLevel(s -> 0));
+			setRegistryName("barrel");
 		}
 
 		@Override
@@ -122,26 +87,6 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 			if (!dropsOriginal.isEmpty())
 				return dropsOriginal;
 			return Collections.singletonList(new ItemStack(this, 1));
-		}
-
-		@Override
-		public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity entity, Hand hand,
-				BlockRayTraceResult hit) {
-			super.onBlockActivated(state, world, pos, entity, hand, hit);
-			int x = pos.getX();
-			int y = pos.getY();
-			int z = pos.getZ();
-			Direction direction = hit.getFace();
-			{
-				Map<String, Object> $_dependencies = new HashMap<>();
-				$_dependencies.put("entity", entity);
-				$_dependencies.put("x", x);
-				$_dependencies.put("y", y);
-				$_dependencies.put("z", z);
-				$_dependencies.put("world", world);
-				ChoppingBlockSetItemProcedure.executeProcedure($_dependencies);
-			}
-			return ActionResultType.SUCCESS;
 		}
 
 		@Override
@@ -157,7 +102,7 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 
 		@Override
 		public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-			return new ChoppingTileEntity();
+			return new CustomTileEntity();
 		}
 
 		@Override
@@ -168,18 +113,6 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 		}
 
 		@Override
-		public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-			if (state.getBlock() != newState.getBlock()) {
-				TileEntity tileentity = world.getTileEntity(pos);
-				if (tileentity instanceof ChoppingTileEntity) {
-					InventoryHelper.dropInventoryItems(world, pos, (ChoppingTileEntity) tileentity);
-					world.updateComparatorOutputLevel(pos, this);
-				}
-				super.onReplaced(state, world, pos, newState, isMoving);
-			}
-		}
-
-		@Override
 		public boolean hasComparatorInputOverride(BlockState state) {
 			return true;
 		}
@@ -187,18 +120,16 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 		@Override
 		public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
 			TileEntity tileentity = world.getTileEntity(pos);
-			if (tileentity instanceof ChoppingTileEntity)
-				return Container.calcRedstoneFromInventory((ChoppingTileEntity) tileentity);
+			if (tileentity instanceof CustomTileEntity)
+				return Container.calcRedstoneFromInventory((CustomTileEntity) tileentity);
 			else
 				return 0;
 		}
 	}
 
-	public static class ChoppingTileEntity extends LockableLootTileEntity implements ISidedInventory {
-//		public static final RegistryObject<TileEntityType<ChoppingTileEntity>> TYPE = ChoppingTileEntityType.CHOPPING_BLOCK_TILE_ENTITY_TYPE;
-
-		private NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
-		protected ChoppingTileEntity() {
+	public static class CustomTileEntity extends LockableLootTileEntity implements ISidedInventory {
+		private NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(0, ItemStack.EMPTY);
+		protected CustomTileEntity() {
 			super(tileEntityType);
 		}
 
@@ -209,6 +140,8 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 				this.stacks = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
 			}
 			ItemStackHelper.loadAllItems(compound, this.stacks);
+			if (compound.get("fluidTank") != null)
+				CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.readNBT(fluidTank, null, compound.get("fluidTank"));
 		}
 
 		@Override
@@ -217,6 +150,7 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 			if (!this.checkLootAndWrite(compound)) {
 				ItemStackHelper.saveAllItems(compound, this.stacks);
 			}
+			compound.put("fluidTank", CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.writeNBT(fluidTank, null));
 			return compound;
 		}
 
@@ -250,12 +184,12 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 
 		@Override
 		public ITextComponent getDefaultName() {
-			return new StringTextComponent("chopping_block");
+			return new StringTextComponent("barrel");
 		}
 
 		@Override
 		public int getInventoryStackLimit() {
-			return 1;
+			return 64;
 		}
 
 		@Override
@@ -265,11 +199,11 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 
 		@Override
 		public ITextComponent getDisplayName() {
-			return new StringTextComponent("Chopping Block");
+			return new StringTextComponent("Barrel");
 		}
 
 		@Override
-		public NonNullList<ItemStack> getItems() {
+		protected NonNullList<ItemStack> getItems() {
 			return this.stacks;
 		}
 
@@ -280,8 +214,6 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 
 		@Override
 		public boolean isItemValidForSlot(int index, ItemStack stack) {
-			if (index == 0)
-				return false;
 			return true;
 		}
 
@@ -297,15 +229,29 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 
 		@Override
 		public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
-			if (index == 0)
-				return false;
 			return true;
 		}
 		private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
+		private final FluidTank fluidTank = new FluidTank(1000, fs -> {
+			if (fs.getFluid() == Fluids.WATER)
+				return true;
+			if (fs.getFluid() == Fluids.LAVA)
+				return true;
+			return false;
+		}) {
+			@Override
+			protected void onContentsChanged() {
+				super.onContentsChanged();
+				markDirty();
+				world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+			}
+		};
 		@Override
 		public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
 			if (!this.removed && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				return handlers[facing.ordinal()].cast();
+			if (!this.removed && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+				return LazyOptional.of(() -> fluidTank).cast();
 			return super.getCapability(capability, facing);
 		}
 
@@ -314,39 +260,6 @@ public class ChoppingBlock extends PrimalageModElements.ModElement {
 			super.remove();
 			for (LazyOptional<? extends IItemHandler> handler : handlers)
 				handler.invalidate();
-		}
-	}
-
-	public class ChoppingBlockRenderer extends TileEntityRenderer<ChoppingTileEntity>
-	{
-		private final Minecraft mc = Minecraft.getInstance();
-
-		public ChoppingBlockRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
-		{
-			super(rendererDispatcherIn);
-		}
-
-		@Override
-		public void render(ChoppingTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn)
-		{
-			BlockState state = te.getWorld().getBlockState(te.getPos());
-			if (!(state.getBlock() instanceof CustomBlock))
-			{
-				matrixStack.push();
-				ItemRenderer itemRenderer = this.mc.getItemRenderer();
-				ItemStack stack = te.getItems().get(0);
-				if (stack.getCount() > 0)
-				{
-					matrixStack.push();
-					matrixStack.translate(0.5, 0.5, 0.5);
-					matrixStack.translate(0, -4.5 / 16.0f, 0);
-					matrixStack.scale(2, 2, 2);
-					IBakedModel ibakedmodel = itemRenderer.getItemModelWithOverrides(stack, te.getWorld(), (LivingEntity) null);
-					itemRenderer.renderItem(stack, ItemCameraTransforms.TransformType.GROUND, true, matrixStack, buffer, combinedLightIn, combinedOverlayIn, ibakedmodel);
-					matrixStack.pop();
-				}
-				matrixStack.pop();
-			}
 		}
 	}
 }
